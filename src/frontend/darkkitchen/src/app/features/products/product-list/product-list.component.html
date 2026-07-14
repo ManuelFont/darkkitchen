@@ -1,0 +1,121 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-7 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight text-stone-900">Products</h1>
+          <p class="mt-1.5 text-stone-600">Manage your products</p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          @if (canImportProducts) {
+            <button
+              type="button"
+              class="inline-flex h-12 w-fit items-center justify-center gap-3 rounded-md border border-stone-300 bg-white px-5 text-sm font-semibold text-stone-900 shadow-sm transition hover:cursor-pointer hover:bg-stone-50"
+              (click)="openProductImport()"
+            >
+              <mat-icon class="size-5">upload_file</mat-icon>
+              Import Products
+            </button>
+          }
+        </div>
+        @if (canManageCatalog()) {
+          <button
+            type="button"
+            class="inline-flex h-12 w-fit items-center justify-center gap-3 rounded-md bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+            (click)="openProductForm()"
+          >
+            <svg
+              class="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+            </svg>
+            Create Product
+          </button>
+        }
+      </div>
+
+      @if (successMessage(); as message) {
+        <div
+          class="mb-7 flex items-center justify-between gap-4 rounded-lg border border-green-300 bg-green-50 px-4 py-3 text-sm font-medium text-green-800"
+        >
+          <span>{{ message }}</span>
+          <button
+            type="button"
+            class="font-semibold hover:cursor-pointer hover:text-green-950"
+            (click)="clearSuccessMessage()"
+          >
+            Close
+          </button>
+        </div>
+      }
+
+      <div class="mb-7 flex min-h-12 flex-col items-stretch gap-4 py-4 sm:flex-row sm:items-center">
+        <app-product-search
+          class="w-full max-w-sm"
+          (searchRequested)="searchProducts($event)"
+        />
+
+        <app-category-dropdown
+          class="sm:ml-3"
+          disabledOptionName="All categories"
+          [isFirstOptionDisabled]="false"
+          [selectedCategoryId]="selectedCategoryId()"
+          [refreshVersion]="categoryRefreshVersion()"
+          (categorySelected)="selectCategory($event)"
+        />
+
+        @if (canManageCatalog()) {
+          <button
+            type="button"
+            class="inline-flex h-12 w-fit items-center justify-center gap-2 rounded-lg border border-accent bg-white px-5 text-sm font-semibold text-accent shadow-sm transition hover:cursor-pointer hover:bg-accent hover:text-white"
+            (click)="openCategoryEditModal()"
+          >
+            Edit Categories
+          </button>
+        }
+      </div>
+
+      @if (isLoading()) {
+        <p class="mb-6 text-stone-600">Loading...</p>
+      }
+
+      @if (!isLoading() && products().length === 0) {
+        <p class="text-stone-600">No products found.</p>
+      } @else {
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          @for (product of products(); track product.id) {
+            <app-product-card
+              [product]="product"
+              [canOpenProduct]="canManageCatalog()"
+            />
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>
+
+@if (isProductFormOpen() && canManageCatalog()) {
+  <app-product-create-modal
+    (closeRequested)="closeProductForm()"
+    (productCreated)="handleProductCreated()"
+  />
+}
+
+@if (isCategoryEditModalOpen() && canManageCatalog()) {
+  <app-category-edit-modal (closeRequested)="closeCategoryEditModal()" />
+}
+
+@if (isProductImportOpen()) {
+  <app-product-import-modal
+    (closeRequested)="closeProductImport()"
+    (importCompleted)="handleProductsImported($event)"
+  />
+}

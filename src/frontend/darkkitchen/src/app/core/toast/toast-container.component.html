@@ -1,0 +1,27 @@
+<div class="pointer-events-none fixed inset-x-0 top-4 z-[100] flex flex-col items-center gap-3 px-4">
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-xl border px-4 py-3 shadow-lg {{
+        toast.containerClass
+      }}"
+    >
+      <mat-icon
+        class="shrink-0 {{ toast.iconClass }}"
+        style="font-size: 20px; width: 20px; height: 20px"
+      >
+        {{ toast.icon }}
+      </mat-icon>
+
+      <p class="flex-1 text-sm font-medium">{{ toast.message }}</p>
+
+      <button
+        type="button"
+        class="shrink-0 text-white/60 transition hover:cursor-pointer hover:text-white"
+        aria-label="Dismiss notification"
+        (click)="dismiss(toast.id)"
+      >
+        <mat-icon style="font-size: 18px; width: 18px; height: 18px">close</mat-icon>
+      </button>
+    </div>
+  }
+</div>

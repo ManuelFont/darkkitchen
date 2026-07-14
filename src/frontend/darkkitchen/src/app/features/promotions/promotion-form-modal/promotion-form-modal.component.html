@@ -1,0 +1,138 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-950/60 px-4 py-8 backdrop-blur-[1px]"
+>
+  <section class="w-full max-w-[670px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <form #form="ngForm" (ngSubmit)="onSubmit(form.valid)">
+      <div class="px-6 pt-7 pb-8 sm:px-12 sm:pt-8 sm:pb-9">
+        <header class="mb-7">
+          <h2 class="text-3xl tracking-tight text-stone-950 sm:text-[2.5rem] sm:leading-tight">
+            {{ isEdit() ? 'Edit promotion' : 'New promotion' }}
+          </h2>
+          <p class="mt-1 text-base text-stone-600 sm:text-lg">
+            {{
+              isEdit()
+                ? "Update this promotion's details"
+                : 'Create a discount you can apply to products'
+            }}
+          </p>
+        </header>
+
+        <div class="space-y-6">
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">Name</label>
+            <input
+              #nameField="ngModel"
+              [(ngModel)]="name"
+              name="name"
+              type="text"
+              placeholder="Summer Sale"
+              required
+              [pattern]="namePattern"
+              class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+            />
+            @if (nameField.hasError('required') && (nameField.touched || hasAttemptedSubmit())) {
+              <p class="mt-1.5 text-sm text-red-700">Name is required</p>
+            } @else if (
+              nameField.hasError('pattern') && (nameField.touched || hasAttemptedSubmit())
+            ) {
+              <p class="mt-1.5 text-sm text-red-700">Name may contain letters and spaces only</p>
+            }
+          </div>
+
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">Discount (%)</label>
+            <input
+              #discountField="ngModel"
+              [(ngModel)]="discountPercentage"
+              name="discountPercentage"
+              type="number"
+              min="1"
+              max="100"
+              step="1"
+              placeholder="25"
+              required
+              class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+            />
+            @if (
+              discountField.hasError('required') && (discountField.touched || hasAttemptedSubmit())
+            ) {
+              <p class="mt-1.5 text-sm text-red-700">Discount is required</p>
+            } @else if (
+              (discountField.hasError('min') || discountField.hasError('max')) &&
+              (discountField.touched || hasAttemptedSubmit())
+            ) {
+              <p class="mt-1.5 text-sm text-red-700">Discount must be between 1 and 100</p>
+            }
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2 sm:gap-7">
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">Start date</label>
+              <input
+                #startDateField="ngModel"
+                [(ngModel)]="startDate"
+                name="startDate"
+                type="date"
+                required
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                startDateField.hasError('required') &&
+                (startDateField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">Start date is required</p>
+              }
+            </div>
+
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">End date</label>
+              <input
+                #endDateField="ngModel"
+                [(ngModel)]="endDate"
+                name="endDate"
+                type="date"
+                required
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                endDateField.hasError('required') && (endDateField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">End date is required</p>
+              } @else if (isEndDateBeforeStartDate && hasAttemptedSubmit()) {
+                <p class="mt-1.5 text-sm text-red-700">End date cannot be before start date</p>
+              }
+            </div>
+          </div>
+
+          @if (errorMessage(); as error) {
+            <p class="text-sm font-medium text-red-700">{{ error }}</p>
+          }
+        </div>
+      </div>
+
+      <footer
+        class="flex flex-col-reverse gap-3 border-t border-stone-200 px-6 py-5 sm:flex-row sm:justify-end sm:px-8"
+      >
+        <button
+          type="button"
+          class="h-12 rounded-lg border border-stone-300 bg-white px-6 text-base font-semibold text-stone-900 transition hover:cursor-pointer hover:bg-stone-50"
+          [disabled]="isSubmitting()"
+          (click)="closeRequested.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="h-12 rounded-lg bg-accent px-10 text-base font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+          [disabled]="isSubmitting()"
+        >
+          @if (isEdit()) {
+            {{ isSubmitting() ? 'Saving...' : 'Save changes' }}
+          } @else {
+            {{ isSubmitting() ? 'Creating...' : 'Confirm' }}
+          }
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

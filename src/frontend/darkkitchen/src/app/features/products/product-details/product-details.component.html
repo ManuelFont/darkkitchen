@@ -1,0 +1,244 @@
+<div class="flex min-h-dvh bg-canvas">
+  <app-sidebar />
+
+  <main class="min-w-0 flex-1 overflow-y-auto px-5 py-6 sm:px-8 lg:px-10 lg:py-7">
+    @if (product(); as product) {
+      <div class="mx-auto max-w-7xl">
+        <header class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight text-stone-950 lg:text-4xl">
+              Edit Product
+            </h1>
+            <p class="mt-1.5 text-base text-stone-600">Update product information</p>
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            @if (errorMessage(); as error) {
+              <p class="text-sm font-medium text-red-700 sm:text-right">{{ error }}</p>
+            }
+            <button
+              type="button"
+              class="inline-flex h-11 w-fit items-center justify-center gap-2 rounded-lg border border-red-500 bg-white px-4 text-sm font-medium text-red-600 transition hover:cursor-pointer hover:bg-red-50 active:scale-[0.98]"
+              [disabled]="isDeleting() || isSubmitting()"
+              (click)="deleteProduct(product.id)"
+            >
+              <mat-icon class="scale-90">delete_outline</mat-icon>
+              {{ isDeleting() ? 'Deleting...' : 'Delete product' }}
+            </button>
+          </div>
+        </header>
+
+        <section
+          class="rounded-xl border border-stone-200 bg-white p-4 shadow-[0_14px_35px_rgba(68,54,39,0.08)]"
+        >
+          <form
+            #form="ngForm"
+            class="grid gap-5 lg:grid-cols-[18rem_minmax(22rem,1fr)] lg:gap-x-8"
+            (ngSubmit)="onSubmit(form.valid)"
+          >
+            <div>
+              <div
+                class="mx-auto aspect-square w-full max-w-[18rem] overflow-hidden rounded-lg bg-stone-200 lg:mx-0"
+              >
+                <img
+                  class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  [src]="imageUrl1"
+                  [alt]="product.name"
+                />
+              </div>
+            </div>
+
+            <div class="flex min-w-0 flex-col">
+              <div class="space-y-3">
+                <label class="block">
+                  <span class="mb-1.5 block text-sm font-semibold text-stone-900">Product name</span>
+                  <input
+                    #nameField="ngModel"
+                    [(ngModel)]="product.name"
+                    type="text"
+                    name="productName"
+                    pattern="^(?=.*[A-Za-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
+                    required
+                    class="h-11 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15"
+                  />
+                  @if (
+                    nameField.hasError('required') &&
+                    (nameField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">Name is required</p>
+                  } @else if (
+                    nameField.hasError('pattern') &&
+                    (nameField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">
+                      Name can only contain letters and spaces
+                    </p>
+                  }
+                </label>
+
+                <label class="block">
+                  <span class="mb-1.5 block text-sm font-semibold text-stone-900">Description</span>
+                  <textarea
+                    #descriptionField="ngModel"
+                    [(ngModel)]="product.description"
+                    rows="3"
+                    name="productDescription"
+                    pattern="^(?=.*[A-Za-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
+                    required
+                    class="min-h-20 w-full resize-none rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-base leading-6 text-stone-900 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15"
+                  ></textarea>
+                  @if (
+                    descriptionField.hasError('required') &&
+                    (descriptionField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">Description is required</p>
+                  } @else if (
+                    descriptionField.hasError('pattern') &&
+                    (descriptionField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">
+                      Description can only contain letters and spaces
+                    </p>
+                  }
+                </label>
+
+                <label class="block">
+                  <span class="mb-1.5 block text-sm font-semibold text-stone-900">Price</span>
+                  <div
+                    class="flex h-11 overflow-hidden rounded-lg border border-stone-300 bg-white transition focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/15"
+                  >
+                    <span class="flex items-center pl-4 text-base text-stone-900">$</span>
+                    <input
+                      #priceField="ngModel"
+                      [(ngModel)]="product.price"
+                      type="number"
+                      name="productPrice"
+                      min="0.01"
+                      step="0.01"
+                      placeholder="0.00"
+                      required
+                      class="min-w-0 flex-1 px-1 text-base text-stone-900 outline-none"
+                    />
+                  </div>
+                  @if (
+                    priceField.hasError('required') &&
+                    (priceField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">Price is required</p>
+                  } @else if (
+                    priceField.hasError('min') &&
+                    (priceField.touched || hasAttemptedSubmit())
+                  ) {
+                    <p class="mt-1.5 text-sm text-red-700">
+                      Price must be greater than zero
+                    </p>
+                  }
+                </label>
+
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold text-stone-900">
+                    Category
+                  </label>
+                  <app-category-dropdown
+                    class="block w-full"
+                    disabledOptionName="Select a category"
+                    [isFirstOptionDisabled]="true"
+                    [selectedCategoryId]="product.category.id"
+                    (categorySelected)="selectCategory($event)"
+                  />
+                  @if (!product.category.id && hasAttemptedSubmit()) {
+                    <p class="mt-1.5 text-sm text-red-700">Category is required</p>
+                  }
+                </div>
+
+              </div>
+            </div>
+
+            <div class="grid gap-4 lg:col-span-2 lg:grid-cols-3">
+              <label class="block min-w-0">
+                <span class="mb-1.5 block text-sm font-semibold text-stone-900">Image URL 1</span>
+                <input
+                  #imageUrl1Field="ngModel"
+                  [(ngModel)]="imageUrl1"
+                  name="productImageUrl1"
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  pattern="^\s*https?://\S+\s*$"
+                  required
+                  class="h-11 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition placeholder:text-stone-500 focus:border-accent focus:ring-2 focus:ring-accent/15"
+                />
+                @if (
+                  imageUrl1Field.hasError('required') &&
+                  (imageUrl1Field.touched || hasAttemptedSubmit())
+                ) {
+                  <p class="mt-1.5 text-sm text-red-700">Image URL 1 is required</p>
+                } @else if (
+                  imageUrl1Field.hasError('pattern') &&
+                  (imageUrl1Field.touched || hasAttemptedSubmit())
+                ) {
+                  <p class="mt-1.5 text-sm text-red-700">Enter a valid URL</p>
+                }
+              </label>
+
+              <label class="block min-w-0">
+                <span class="mb-1.5 block text-sm font-semibold text-stone-900">Image URL 2</span>
+                <input
+                  #imageUrl2Field="ngModel"
+                  [(ngModel)]="imageUrl2"
+                  name="productImageUrl2"
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  pattern="^\s*https?://\S+\s*$"
+                  class="h-11 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition placeholder:text-stone-500 focus:border-accent focus:ring-2 focus:ring-accent/15"
+                />
+                @if (
+                  imageUrl2Field.hasError('pattern') &&
+                  (imageUrl2Field.touched || hasAttemptedSubmit())
+                ) {
+                  <p class="mt-1.5 text-sm text-red-700">Enter a valid URL</p>
+                }
+              </label>
+
+              <label class="block min-w-0">
+                <span class="mb-1.5 block text-sm font-semibold text-stone-900">Image URL 3</span>
+                <input
+                  #imageUrl3Field="ngModel"
+                  [(ngModel)]="imageUrl3"
+                  name="productImageUrl3"
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  pattern="^\s*https?://\S+\s*$"
+                  class="h-11 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition placeholder:text-stone-500 focus:border-accent focus:ring-2 focus:ring-accent/15"
+                />
+                @if (
+                  imageUrl3Field.hasError('pattern') &&
+                  (imageUrl3Field.touched || hasAttemptedSubmit())
+                ) {
+                  <p class="mt-1.5 text-sm text-red-700">Enter a valid URL</p>
+                }
+              </label>
+            </div>
+
+            <footer
+              class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end lg:col-span-2"
+            >
+              <a
+                routerLink="/products"
+                class="inline-flex h-11 items-center justify-center rounded-lg border border-stone-300 bg-white px-6 text-sm font-semibold text-stone-900 transition hover:bg-stone-50 active:scale-[0.98]"
+              >
+                Cancel
+              </a>
+              <button
+                type="submit"
+                class="h-11 rounded-lg bg-green-700 px-6 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-green-800 active:scale-[0.98]"
+                [disabled]="isSubmitting() || isDeleting()"
+              >
+                {{ isSubmitting() ? 'Saving...' : 'Save changes' }}
+              </button>
+            </footer>
+          </form>
+        </section>
+      </div>
+    }
+  </main>
+</div>

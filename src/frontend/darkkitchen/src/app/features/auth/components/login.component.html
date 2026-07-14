@@ -1,0 +1,55 @@
+<section class="login-container">
+  <h1>Log In</h1>
+
+  <form #form="ngForm" (ngSubmit)="onSubmit(form.valid)">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+
+      <input
+        #emailField="ngModel"
+        matInput
+        [(ngModel)]="email"
+        name="email"
+        type="email"
+        required
+        email
+      />
+
+      @if (emailField.hasError('required') && emailField.touched) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (emailField.hasError('email') && emailField.touched) {
+        <mat-error>Enter a valid email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+
+      <input
+        #passwordField="ngModel"
+        matInput
+        [(ngModel)]="password"
+        name="password"
+        type="password"
+        required
+      />
+
+      @if (passwordField.hasError('required') && passwordField.touched) {
+        <mat-error>Password is required</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Logging in...' : 'Log in' }}
+    </button>
+
+    @if (message(); as loginMessage) {
+      <p class="auth-message" [class.error]="loginMessage.type === 'error'">
+        {{ loginMessage.text }}
+      </p>
+    }
+
+    <p class="auth-link">New to DarkKitchen? <a routerLink="/register">Register</a></p>
+  </form>
+</section>

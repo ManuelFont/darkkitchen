@@ -1,0 +1,143 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-950/60 px-4 py-4"
+>
+  <section class="w-full max-w-[670px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <form class="flex max-h-[calc(100vh-2rem)] flex-col" (ngSubmit)="onSubmit()">
+      <header class="shrink-0 px-12 pb-7 pt-8">
+        <h2 class="text-3xl tracking-tight text-stone-950 sm:text-[2.5rem] sm:leading-tight">
+          Import Products
+        </h2>
+        <p class="mt-1 text-base text-stone-600 sm:text-lg">
+          Upload a file with products to add to your menu
+        </p>
+      </header>
+
+      <div class="min-h-0 flex-1 overflow-y-auto px-12 pb-9">
+        <div class="space-y-6">
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">
+              Importer
+            </label>
+            <select
+              [(ngModel)]="selectedImporterId"
+              name="productImporter"
+              required
+              class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition disabled:bg-stone-100 disabled:text-stone-500"
+              [disabled]="isLoadingImporters() || isSubmitting() || importers().length === 0"
+            >
+              @if (isLoadingImporters()) {
+                <option value="">Loading importers...</option>
+              } @else {
+                @for (importer of importers(); track importer.id) {
+                  <option [value]="importer.id">
+                    {{ importer.name }}
+                  </option>
+                }
+              }
+            </select>
+
+            @if (selectedImporterId) {
+              @for (importer of importers(); track importer.id) {
+                @if (importer.id === selectedImporterId) {
+                  <p class="mt-1.5 text-sm text-stone-600">{{ importer.description }}</p>
+                }
+              }
+            } @else if (hasAttemptedSubmit()) {
+              <p class="mt-1.5 text-sm text-red-700">Importer is required</p>
+            }
+          </div>
+
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">
+              File
+            </label>
+            <input
+              name="productImportFile"
+              type="file"
+              accept=".json,application/json"
+              required
+              class="block w-full rounded-lg border border-stone-300 bg-white text-base text-stone-900 file:mr-5 file:h-14 file:border-0 file:border-r file:border-stone-300 file:bg-stone-100 file:px-5 file:text-base file:font-semibold file:text-stone-900 hover:file:cursor-pointer hover:file:bg-stone-200"
+              [disabled]="isSubmitting()"
+              (change)="onFileSelected($event)"
+            />
+            @if (!selectedFile && hasAttemptedSubmit()) {
+              <p class="mt-1.5 text-sm text-red-700">File is required</p>
+            } @else if (selectedFile) {
+              <p class="mt-1.5 text-sm text-stone-600">{{ selectedFile.name }}</p>
+            }
+          </div>
+
+          @if (errorMessage(); as error) {
+            <p class="text-sm font-medium text-red-700">{{ error }}</p>
+          }
+
+          @if (result(); as importResult) {
+            <section class="rounded-lg border border-stone-200 bg-stone-50 p-5">
+              <h3 class="text-base font-semibold text-stone-950">Import result</h3>
+              <dl class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div>
+                  <dt class="text-xs font-semibold uppercase text-stone-500">Total</dt>
+                  <dd class="mt-1 text-2xl font-bold text-stone-950">
+                    {{ importResult.total }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase text-stone-500">Created</dt>
+                  <dd class="mt-1 text-2xl font-bold text-green-700">
+                    {{ importResult.created }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase text-stone-500">Duplicates</dt>
+                  <dd class="mt-1 text-2xl font-bold text-stone-950">
+                    {{ importResult.skippedDuplicates }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase text-stone-500">Failed</dt>
+                  <dd class="mt-1 text-2xl font-bold text-red-700">
+                    {{ importResult.failed }}
+                  </dd>
+                </div>
+              </dl>
+
+              @if (importResult.issues.length > 0) {
+                <div class="mt-5">
+                  <h4 class="text-sm font-semibold text-stone-950">Issues</h4>
+                  <ul class="mt-2 max-h-44 space-y-2 overflow-y-auto">
+                    @for (issue of importResult.issues; track issue.name + issue.message) {
+                      <li class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm">
+                        <span class="font-semibold text-red-900">{{ issue.name }}</span>
+                        <span class="text-red-800"> - {{ issue.message }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </section>
+          }
+        </div>
+      </div>
+
+      <footer
+        class="flex shrink-0 flex-row justify-end gap-3 border-t border-stone-200 px-8 py-5"
+      >
+        <button
+          type="button"
+          class="h-12 rounded-lg border border-stone-300 bg-white px-6 text-base font-semibold text-stone-900 transition hover:cursor-pointer hover:bg-stone-50"
+          [disabled]="isSubmitting()"
+          (click)="closeRequested.emit()"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="h-12 rounded-lg bg-green-700 px-10 text-base font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-green-800 disabled:bg-stone-400 disabled:hover:cursor-not-allowed"
+          [disabled]="isSubmitting() || isLoadingImporters() || importers().length === 0"
+        >
+          {{ isSubmitting() ? 'Importing...' : 'Import' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

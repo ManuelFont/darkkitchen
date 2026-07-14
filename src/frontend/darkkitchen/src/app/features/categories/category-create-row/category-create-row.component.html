@@ -1,0 +1,44 @@
+<div class="rounded-xl border border-stone-200 p-5">
+  <div class="grid gap-5">
+    <div class="grid gap-5 sm:grid-cols-[1fr_1.5fr]">
+      <div>
+        <label class="mb-2 block text-sm font-semibold text-stone-900">Name</label>
+        <input
+          type="text"
+          [(ngModel)]="name"
+          name="newCategoryName"
+          class="h-12 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition"
+          (input)="clearMessages()"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-semibold text-stone-900">Description</label>
+        <input
+          type="text"
+          [(ngModel)]="description"
+          name="newCategoryDescription"
+          class="h-12 w-full rounded-lg border border-stone-300 bg-white px-4 text-base text-stone-900 outline-none transition"
+          (input)="clearMessages()"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="h-12 rounded-lg bg-green-700 px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-gray-500"
+        [disabled]="isCreating()"
+        (click)="createCategory()"
+      >
+        {{ isCreating() ? 'Creating...' : 'Create Category' }}
+      </button>
+    </div>
+
+    @if (errorMessage(); as error) {
+      <p class="text-sm font-medium text-red-700">{{ error }}</p>
+    } @else if (successMessage(); as success) {
+      <p class="text-sm font-medium text-green-700">{{ success }}</p>
+    }
+  </div>
+</div>

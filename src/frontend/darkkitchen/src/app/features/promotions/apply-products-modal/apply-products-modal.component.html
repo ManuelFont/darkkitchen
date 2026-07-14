@@ -1,0 +1,70 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-950/60 px-4 py-8 backdrop-blur-[1px]"
+>
+  <section class="w-full max-w-[670px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div class="px-6 pt-7 pb-6 sm:px-12 sm:pt-8">
+      <header class="mb-6">
+        <h2 class="text-3xl tracking-tight text-stone-950 sm:text-[2.5rem] sm:leading-tight">
+          Apply to products
+        </h2>
+        <p class="mt-1 text-base text-stone-600 sm:text-lg">
+          Select the products that should use
+          <span class="font-semibold text-stone-900">{{ promotion().name }}</span>
+        </p>
+      </header>
+
+      <div class="max-h-[22rem] overflow-y-auto rounded-lg border border-stone-200">
+        @if (isLoading()) {
+          <div class="space-y-2 p-3">
+            @for (skeleton of [1, 2, 3, 4, 5]; track skeleton) {
+              <div class="h-12 animate-pulse rounded-lg bg-stone-100"></div>
+            }
+          </div>
+        } @else if (hasLoadError()) {
+          <p class="px-4 py-10 text-center text-stone-500">Could not load products.</p>
+        } @else if (isEmpty()) {
+          <p class="px-4 py-10 text-center text-stone-500">No products available.</p>
+        } @else {
+          <ul class="divide-y divide-stone-100">
+            @for (product of products(); track product.id) {
+              <li>
+                <label
+                  class="flex cursor-pointer items-center gap-3 px-4 py-3 transition hover:bg-stone-50"
+                >
+                  <input
+                    type="checkbox"
+                    class="size-5 rounded border-stone-300 text-accent accent-accent"
+                    [checked]="isSelected(product.id)"
+                    (change)="toggle(product.id)"
+                  />
+                  <span class="text-base text-stone-900">{{ product.name }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+
+    <footer
+      class="flex flex-col-reverse gap-3 border-t border-stone-200 px-6 py-5 sm:flex-row sm:justify-end sm:px-8"
+    >
+      <button
+        type="button"
+        class="h-12 rounded-lg border border-stone-300 bg-white px-6 text-base font-semibold text-stone-900 transition hover:cursor-pointer hover:bg-stone-50"
+        [disabled]="isSubmitting()"
+        (click)="closeRequested.emit()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="h-12 rounded-lg bg-accent px-10 text-base font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+        [disabled]="isSubmitting() || isLoading() || hasLoadError()"
+        (click)="onSubmit()"
+      >
+        {{ isSubmitting() ? 'Saving...' : 'Save' }}
+      </button>
+    </footer>
+  </section>
+</div>

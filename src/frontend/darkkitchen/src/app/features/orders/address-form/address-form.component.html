@@ -1,0 +1,62 @@
+<form [formGroup]="form" class="flex flex-col gap-4">
+  <div>
+    <label for="street" class="mb-1.5 block text-sm font-medium text-stone-300">Street</label>
+    <input
+      id="street"
+      type="text"
+      formControlName="street"
+      placeholder="Main street"
+      class="w-full rounded-xl border border-white/10 bg-surface-sunken px-4 py-2.5 text-sm text-stone-200 placeholder:text-stone-500 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+    />
+    @if (street.invalid && (street.touched || showErrors())) {
+      @if (street.hasError('required')) {
+        <p class="mt-1.5 text-sm text-accent-300">Street is required.</p>
+      } @else {
+        <p class="mt-1.5 text-sm text-accent-300">
+          Street can only contain letters, numbers and spaces.
+        </p>
+      }
+    }
+  </div>
+
+  <div>
+    <label for="doorNumber" class="mb-1.5 block text-sm font-medium text-stone-300">
+      Door number
+    </label>
+    <input
+      id="doorNumber"
+      type="number"
+      min="1"
+      formControlName="doorNumber"
+      placeholder="123"
+      class="w-full rounded-xl border border-white/10 bg-surface-sunken px-4 py-2.5 text-sm text-stone-200 placeholder:text-stone-500 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+    />
+    @if (doorNumber.invalid && (doorNumber.touched || showErrors())) {
+      @if (doorNumber.hasError('required')) {
+        <p class="mt-1.5 text-sm text-accent-300">Door number is required.</p>
+      } @else {
+        <p class="mt-1.5 text-sm text-accent-300">
+          Door number must be a whole number greater than 0.
+        </p>
+      }
+    }
+  </div>
+
+  <div>
+    <label for="apartment" class="mb-1.5 block text-sm font-medium text-stone-300">
+      Apartment <span class="text-stone-500">(optional)</span>
+    </label>
+    <input
+      id="apartment"
+      type="text"
+      formControlName="apartment"
+      placeholder="101"
+      class="w-full rounded-xl border border-white/10 bg-surface-sunken px-4 py-2.5 text-sm text-stone-200 placeholder:text-stone-500 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+    />
+    @if (apartment.invalid && (apartment.touched || showErrors())) {
+      <p class="mt-1.5 text-sm text-accent-300">
+        Apartment can only contain letters, numbers and spaces.
+      </p>
+    }
+  </div>
+</form>

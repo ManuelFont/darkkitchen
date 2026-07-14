@@ -1,0 +1,26 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-stone-900">Sales Report</h1>
+        <p class="mt-1.5 text-stone-600">
+          Delivered sales grouped by month and client, with overall totals
+        </p>
+      </header>
+
+      <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        @for (card of grandTotalCards(); track card.label) {
+          <app-amount-card [card]="card" [loading]="isLoading()" />
+        }
+      </section>
+
+      <app-date-range-filter class="mt-8 block" (rangeChange)="applyRange($event)" />
+
+      <div class="mt-8">
+        <app-sales-report-table [months]="months()" [loading]="isLoading()" />
+      </div>
+    </div>
+  </main>
+</div>

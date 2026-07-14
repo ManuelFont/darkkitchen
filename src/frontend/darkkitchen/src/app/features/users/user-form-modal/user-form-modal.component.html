@@ -1,0 +1,173 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-950/60 px-4 py-8 backdrop-blur-[1px]"
+>
+  <section class="w-full max-w-[670px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <form #form="ngForm" (ngSubmit)="onSubmit(form.valid)">
+      <div class="px-6 pt-7 pb-8 sm:px-12 sm:pt-8 sm:pb-9">
+        <header class="mb-7">
+          <h2 class="text-3xl tracking-tight text-stone-950 sm:text-[2.5rem] sm:leading-tight">
+            {{ isEdit() ? 'Edit user' : 'New user' }}
+          </h2>
+          <p class="mt-1 text-base text-stone-600 sm:text-lg">
+            {{
+              isEdit()
+                ? "Update this user's details"
+                : 'Create an admin, dispatcher or client account'
+            }}
+          </p>
+        </header>
+
+        <div class="space-y-6">
+          <div class="grid gap-6 sm:grid-cols-2 sm:gap-7">
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">First name</label>
+              <input
+                #firstNameField="ngModel"
+                [(ngModel)]="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Enter first name"
+                required
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                firstNameField.hasError('required') &&
+                (firstNameField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">First name is required</p>
+              }
+            </div>
+
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">Last name</label>
+              <input
+                #lastNameField="ngModel"
+                [(ngModel)]="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Enter last name"
+                required
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                lastNameField.hasError('required') &&
+                (lastNameField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">Last name is required</p>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">Email</label>
+            <input
+              #emailField="ngModel"
+              [(ngModel)]="email"
+              name="email"
+              type="email"
+              email
+              placeholder="Enter email"
+              required
+              class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+            />
+            @if (emailField.hasError('required') && (emailField.touched || hasAttemptedSubmit())) {
+              <p class="mt-1.5 text-sm text-red-700">Email is required</p>
+            } @else if (
+              emailField.hasError('email') && (emailField.touched || hasAttemptedSubmit())
+            ) {
+              <p class="mt-1.5 text-sm text-red-700">Enter a valid email</p>
+            }
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2 sm:gap-7">
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">
+                {{ isEdit() ? 'Password (leave blank to keep current)' : 'Password' }}
+              </label>
+              <input
+                #passwordField="ngModel"
+                [(ngModel)]="password"
+                name="password"
+                type="password"
+                [placeholder]="isEdit() ? 'Leave blank to keep current' : 'Enter password'"
+                [required]="!isEdit()"
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                passwordField.hasError('required') &&
+                (passwordField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">Password is required</p>
+              }
+            </div>
+
+            <div>
+              <label class="mb-2 block text-base font-semibold text-stone-900">Phone</label>
+              <input
+                #phoneField="ngModel"
+                [(ngModel)]="phone"
+                name="phone"
+                type="text"
+                placeholder="099 123 456"
+                required
+                class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition placeholder:text-stone-500"
+              />
+              @if (
+                phoneField.hasError('required') && (phoneField.touched || hasAttemptedSubmit())
+              ) {
+                <p class="mt-1.5 text-sm text-red-700">Phone is required</p>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-base font-semibold text-stone-900">Role</label>
+            <select
+              #roleField="ngModel"
+              [(ngModel)]="roleId"
+              name="role"
+              required
+              class="h-14 w-full rounded-lg border border-stone-300 bg-white px-5 text-base text-stone-900 outline-none transition"
+            >
+              <option [ngValue]="null" disabled>Select a role</option>
+              @for (role of roles; track role.id) {
+                <option [ngValue]="role.id">{{ role.name }}</option>
+              }
+            </select>
+            @if (roleField.hasError('required') && (roleField.touched || hasAttemptedSubmit())) {
+              <p class="mt-1.5 text-sm text-red-700">Role is required</p>
+            }
+          </div>
+
+          @if (errorMessage(); as error) {
+            <p class="text-sm font-medium text-red-700">{{ error }}</p>
+          }
+        </div>
+      </div>
+
+      <footer
+        class="flex flex-col-reverse gap-3 border-t border-stone-200 px-6 py-5 sm:flex-row sm:justify-end sm:px-8"
+      >
+        <button
+          type="button"
+          class="h-12 rounded-lg border border-stone-300 bg-white px-6 text-base font-semibold text-stone-900 transition hover:cursor-pointer hover:bg-stone-50"
+          [disabled]="isSubmitting()"
+          (click)="closeRequested.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="h-12 rounded-lg bg-accent px-10 text-base font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+          [disabled]="isSubmitting()"
+        >
+          @if (isEdit()) {
+            {{ isSubmitting() ? 'Saving...' : 'Save changes' }}
+          } @else {
+            {{ isSubmitting() ? 'Creating...' : 'Confirm' }}
+          }
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

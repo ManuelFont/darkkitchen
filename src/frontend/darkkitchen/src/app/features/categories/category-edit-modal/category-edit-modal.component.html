@@ -1,0 +1,46 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-950/60 px-4 py-4"
+>
+  <section class="w-full max-w-[670px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div class="flex min-h-80 flex-col">
+      <header class="shrink-0 px-12 pb-7 pt-8">
+        <h2 class="text-3xl tracking-tight text-stone-950 sm:text-[2.5rem] sm:leading-tight">
+          Edit Categories
+        </h2>
+      </header>
+
+      <div class="min-h-0 flex-1 px-12 pb-9">
+        <div class="max-h-[440px] space-y-5 overflow-y-auto pr-2">
+          <app-category-create-row (categoryCreated)="reloadCategories()" />
+
+          @if (isLoading()) {
+            <p class="text-base text-stone-600">Loading...</p>
+          } @else if (errorMessage(); as error) {
+            <p class="text-sm font-medium text-red-700">{{ error }}</p>
+          } @else if (categories().length === 0) {
+            <p class="text-base text-stone-600">No categories created yet</p>
+          } @else {
+            @for (category of categories(); track category.id) {
+              <app-category-edit-row
+                [category]="category"
+                (categoryChanged)="reloadCategories()"
+              />
+            }
+          }
+        </div>
+      </div>
+
+      <footer
+        class="flex shrink-0 flex-row justify-end border-t border-stone-200 px-8 py-5"
+      >
+        <button
+          type="button"
+          class="h-12 rounded-lg border border-stone-300 bg-white px-6 text-base font-semibold text-stone-900 transition hover:cursor-pointer hover:bg-stone-50"
+          (click)="closeRequested.emit()"
+        >
+          Close
+        </button>
+      </footer>
+    </div>
+  </section>
+</div>

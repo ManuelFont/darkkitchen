@@ -1,0 +1,34 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-stone-900">Audit logs</h1>
+        <p class="mt-1.5 text-stone-600">
+          Full record of creation, updating and deletion events across the system
+        </p>
+      </header>
+
+      <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        @for (metric of metrics(); track metric.label) {
+          @if (isMetricsLoading()) {
+            <app-metric-card-skeleton />
+          } @else {
+            <app-metric-card [metric]="metric" />
+          }
+        }
+      </section>
+
+      <app-audit-logs-filters class="mt-8 block" (filtersChange)="applyFilters($event)" />
+
+      <section
+        class="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm"
+      >
+        <div class="overflow-x-auto">
+          <app-audit-logs-table [logs]="logs()" [loading]="isLogsLoading()" />
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

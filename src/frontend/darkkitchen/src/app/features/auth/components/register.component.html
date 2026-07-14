@@ -1,0 +1,122 @@
+<section class="register-container">
+  <h1>Register</h1>
+
+  <form #form="ngForm" (ngSubmit)="onSubmit(form.valid)">
+    <div class="name-fields">
+      <mat-form-field appearance="outline">
+        <mat-label>First name</mat-label>
+
+        <input
+          #firstNameField="ngModel"
+          matInput
+          [(ngModel)]="firstName"
+          name="firstName"
+          type="text"
+          required
+          [pattern]="firstNamePattern"
+        />
+
+        @if (firstNameField.hasError('required') && firstNameField.touched) {
+          <mat-error>First name is required</mat-error>
+        }
+        @if (firstNameField.hasError('pattern') && firstNameField.touched) {
+          <mat-error>Use letters and spaces only</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last name</mat-label>
+
+        <input
+          #lastNameField="ngModel"
+          matInput
+          [(ngModel)]="lastName"
+          name="lastName"
+          type="text"
+          required
+          [pattern]="lastNamePattern"
+        />
+
+        @if (lastNameField.hasError('required') && lastNameField.touched) {
+          <mat-error>Last name is required</mat-error>
+        }
+        @if (lastNameField.hasError('pattern') && lastNameField.touched) {
+          <mat-error>Use 3 to 25 letters and spaces</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+
+      <input
+        #emailField="ngModel"
+        matInput
+        [(ngModel)]="email"
+        name="email"
+        type="email"
+        required
+        email
+      />
+
+      @if (emailField.hasError('required') && emailField.touched) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (emailField.hasError('email') && emailField.touched) {
+        <mat-error>Enter a valid email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+
+      <input
+        #phoneField="ngModel"
+        matInput
+        [(ngModel)]="phone"
+        name="phone"
+        type="tel"
+        required
+        [pattern]="phonePattern"
+      />
+
+      @if (phoneField.hasError('required') && phoneField.touched) {
+        <mat-error>Phone is required</mat-error>
+      }
+      @if (phoneField.hasError('pattern') && phoneField.touched) {
+        <mat-error>Use a valid Uruguay mobile number</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+
+      <input
+        #passwordField="ngModel"
+        matInput
+        [(ngModel)]="password"
+        name="password"
+        type="password"
+        required
+        [pattern]="passwordPattern"
+      />
+
+      @if (passwordField.hasError('required') && passwordField.touched) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (passwordField.hasError('pattern') && passwordField.touched) {
+        <mat-error>Use 15-25 characters with upper, lower, number, and symbol</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Creating account...' : 'Create account' }}
+    </button>
+
+    @if (errorMessage(); as error) {
+      <p class="auth-message error">{{ error }}</p>
+    }
+
+    <p class="auth-link">Already registered? <a routerLink="/login">Log in</a></p>
+  </form>
+</section>

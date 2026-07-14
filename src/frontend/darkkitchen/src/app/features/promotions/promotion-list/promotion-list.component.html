@@ -1,0 +1,58 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <header class="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight text-stone-900">Promotions</h1>
+          <p class="mt-1.5 text-stone-600">Create discounts and apply them to products</p>
+        </div>
+
+        <button
+          type="button"
+          class="inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+          (click)="openCreateForm()"
+        >
+          <span class="text-lg leading-none">+</span>
+          New promotion
+        </button>
+      </header>
+
+      <app-promotion-filters class="mb-6 block" (filtersChange)="applyFilters($event)" />
+
+      <app-promotion-table
+        [promotions]="rows()"
+        [loading]="isLoading()"
+        (edit)="openEditForm($event)"
+        (delete)="requestDelete($event)"
+        (applyProducts)="openApplyProducts($event)"
+      />
+    </div>
+  </main>
+</div>
+
+@if (isFormOpen()) {
+  <app-promotion-form-modal
+    [promotion]="editingPromotion()"
+    (closeRequested)="closeForm()"
+    (saved)="onPromotionSaved()"
+  />
+}
+
+@if (pendingDelete(); as promotion) {
+  <app-promotion-delete-modal
+    [promotion]="promotion"
+    [isDeleting]="isDeleting()"
+    (cancelled)="cancelDelete()"
+    (confirmed)="confirmDelete()"
+  />
+}
+
+@if (applyingPromotion(); as promotion) {
+  <app-apply-products-modal
+    [promotion]="promotion"
+    (closeRequested)="closeApplyProducts()"
+    (saved)="onProductsSaved()"
+  />
+}

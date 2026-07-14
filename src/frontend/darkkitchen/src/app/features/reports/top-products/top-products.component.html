@@ -1,0 +1,18 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-stone-900">Top Products</h1>
+        <p class="mt-1.5 text-stone-600">
+          Best-selling products ranked by quantity sold across delivered orders
+        </p>
+      </header>
+
+      <app-date-range-filter class="mb-8 block" (rangeChange)="applyRange($event)" />
+
+      <app-top-products-chart [bars]="bars()" [loading]="isLoading()" />
+    </div>
+  </main>
+</div>

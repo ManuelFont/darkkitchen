@@ -1,0 +1,96 @@
+<div class="overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm">
+  <div class="overflow-x-auto">
+    <table class="w-full table-fixed text-left text-sm">
+      <thead>
+        <tr
+          class="border-b border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+        >
+          <th class="w-28 px-4 py-3">ID</th>
+          <th class="w-48 px-4 py-3">Name</th>
+          <th class="w-96 px-4 py-3">Email</th>
+          <th class="w-40 px-4 py-3">Role</th>
+          <th class="w-36 px-4 py-3">Phone</th>
+          <th class="px-4 py-3">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (loading()) {
+          @for (row of skeletonRows; track $index) {
+            <tr class="border-b border-white/5 last:border-0">
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-16 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-32 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-44 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-24 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-28 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-6 animate-pulse rounded bg-white/10"></div>
+              </td>
+            </tr>
+          }
+        } @else if (users().length === 0) {
+          <tr>
+            <td colspan="6" class="px-4 py-12 text-center text-stone-400">No users found.</td>
+          </tr>
+        } @else {
+          @for (user of users(); track user.id) {
+            <tr class="border-b border-white/5 last:border-0 hover:bg-white/5">
+              <td class="px-4 py-3 font-mono text-xs text-stone-500">
+                #{{ user.id | slice: 0 : 8 }}
+              </td>
+
+              <td class="truncate px-4 py-3 font-medium text-stone-100">{{ user.fullName }}</td>
+
+              <td class="truncate px-4 py-3 text-stone-300">{{ user.email }}</td>
+
+              <td class="px-4 py-3">
+                <span
+                  class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold {{
+                    user.roleBadgeClass
+                  }}"
+                >
+                  <span class="size-1.5 rounded-full {{ user.roleDotClass }}"></span>
+                  {{ user.roleName }}
+                </span>
+              </td>
+
+              <td class="truncate px-4 py-3 font-mono text-stone-300">{{ user.phone }}</td>
+
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1">
+                  <button
+                    type="button"
+                    class="inline-flex size-8 items-center justify-center rounded-lg text-stone-400 transition hover:cursor-pointer hover:bg-info-500/15 hover:text-info-300"
+                    [attr.aria-label]="'Edit ' + user.fullName"
+                    (click)="editUser.emit(user)"
+                  >
+                    <mat-icon style="font-size: 18px; width: 18px; height: 18px">edit</mat-icon>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="inline-flex size-8 items-center justify-center rounded-lg text-stone-400 transition hover:cursor-pointer hover:bg-accent-500/15 hover:text-accent-400"
+                    [attr.aria-label]="'Delete ' + user.fullName"
+                    (click)="deleteUser.emit(user)"
+                  >
+                    <mat-icon style="font-size: 18px; width: 18px; height: 18px">delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

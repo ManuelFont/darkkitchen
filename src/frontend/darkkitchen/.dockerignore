@@ -1,0 +1,9 @@
+.git
+.angular
+.vscode
+.DS_Store
+dist
+node_modules
+out-tsc
+
+npm-debug.log*

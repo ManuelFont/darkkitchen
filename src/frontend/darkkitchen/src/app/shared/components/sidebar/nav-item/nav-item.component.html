@@ -1,0 +1,11 @@
+<button
+  type="button"
+  (click)="selected.emit()"
+  class="flex w-full items-center gap-3 border-l-2 px-6 py-3 text-left transition-colors hover:bg-surface-raised/50 hover:text-stone-200 hover:cursor-pointer"
+  [class]="active()
+    ? 'border-brand bg-surface-raised/60 text-brand'
+    : 'border-transparent text-stone-400'"
+>
+  <mat-icon class="shrink-0">{{ icon() }}</mat-icon>
+  <span class="text-[15px]">{{ label() }}</span>
+</button>

@@ -1,0 +1,123 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-3xl">
+      <a
+        routerLink="/orders"
+        class="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+      >
+        Back to orders
+      </a>
+
+      @if (isLoading()) {
+        <div class="mt-4 space-y-6">
+          <div class="h-9 w-64 animate-pulse rounded bg-stone-300"></div>
+          <div class="h-48 animate-pulse rounded-2xl bg-stone-200"></div>
+          <div class="h-40 animate-pulse rounded-2xl bg-stone-200"></div>
+        </div>
+      } @else if (hasFailed()) {
+        <div
+          class="mt-6 rounded-2xl border border-white/10 bg-surface-raised px-6 py-16 text-center shadow-sm"
+        >
+          <p class="text-lg font-semibold text-stone-100">Order not found</p>
+          <p class="mt-2 text-sm text-stone-400">We couldn't load this order. Please try again.</p>
+          <a
+            routerLink="/orders"
+            class="mt-5 inline-flex h-11 items-center rounded-lg bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+          >
+            Back to orders
+          </a>
+        </div>
+      } @else if (view(); as order) {
+        <header class="mt-4 mb-7 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight text-stone-900">
+              Order #{{ order.shortId }}
+            </h1>
+            <p class="mt-1.5 text-stone-600">{{ order.createdAt }}</p>
+          </div>
+
+          <span
+            class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold {{
+              order.statusBadgeClass
+            }}"
+          >
+            <span class="size-1.5 rounded-full {{ order.statusDotClass }}"></span>
+            {{ order.statusLabel }}
+          </span>
+        </header>
+
+        <div class="flex flex-col gap-6">
+          <section
+            class="overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm"
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full table-fixed text-left text-sm">
+                <thead>
+                  <tr
+                    class="border-b border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+                  >
+                    <th class="px-4 py-3">Product</th>
+                    <th class="w-20 px-4 py-3 text-center">Qty</th>
+                    <th class="w-32 px-4 py-3 text-right">Unit price</th>
+                    <th class="w-32 px-4 py-3 text-right">Subtotal</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  @for (item of order.items; track $index) {
+                    <tr class="border-b border-white/5 last:border-0">
+                      <td class="truncate px-4 py-3 font-medium text-stone-100">
+                        {{ item.productName }}
+                      </td>
+                      <td class="px-4 py-3 text-center text-stone-300">{{ item.quantity }}</td>
+                      <td class="px-4 py-3 text-right text-stone-300">{{ item.unitPriceLabel }}</td>
+                      <td class="px-4 py-3 text-right font-semibold text-stone-100">
+                        {{ item.subtotalLabel }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="rounded-2xl border border-white/10 bg-surface-raised p-6 shadow-sm">
+            <h2 class="mb-3 text-base font-semibold text-stone-100">Delivery</h2>
+            <dl class="flex flex-col gap-2 text-sm">
+              <div class="flex items-center justify-between">
+                <dt class="text-stone-400">Option</dt>
+                <dd class="text-stone-200">{{ order.deliveryTypeLabel }}</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-stone-400">Address</dt>
+                <dd class="text-stone-200">{{ order.addressLine }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="rounded-2xl border border-white/10 bg-surface-raised p-6 shadow-sm">
+            <h2 class="mb-3 text-base font-semibold text-stone-100">Summary</h2>
+            <dl class="flex flex-col gap-2 text-sm">
+              <div class="flex items-center justify-between">
+                <dt class="text-stone-400">Subtotal</dt>
+                <dd class="text-stone-200">{{ order.subtotalLabel }}</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-stone-400">Delivery</dt>
+                <dd class="text-stone-200">{{ order.deliveryLabel }}</dd>
+              </div>
+              <div
+                class="flex items-center justify-between border-t border-white/10 pt-2 text-base"
+              >
+                <dt class="font-semibold text-stone-100">Total</dt>
+                <dd class="font-bold text-stone-100">{{ order.totalLabel }}</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+      }
+    </div>
+  </main>
+</div>

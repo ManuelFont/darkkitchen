@@ -1,0 +1,43 @@
+<aside
+  class="flex max-h-[calc(100dvh-5rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm"
+>
+  <header class="flex items-center justify-between gap-2 border-b border-white/10 px-5 py-4">
+    <h2 class="text-base font-semibold text-stone-100">Your cart</h2>
+    <span class="rounded-full bg-white/5 px-2.5 py-0.5 text-xs font-semibold text-stone-300">
+      {{ count() }} {{ count() === 1 ? 'item' : 'items' }}
+    </span>
+  </header>
+
+  @if (items().length === 0) {
+    <div class="flex flex-1 flex-col items-center justify-center gap-2 px-5 py-12 text-center">
+      <p class="text-sm font-medium text-stone-300">Your cart is empty</p>
+      <p class="text-xs text-stone-500">Add products from the catalog to get started.</p>
+    </div>
+  } @else {
+    <div class="flex-1 divide-y divide-white/5 overflow-y-auto px-5">
+      @for (item of items(); track item.productId) {
+        <app-cart-item-row
+          [item]="item"
+          (quantityChange)="quantityChange.emit({ productId: item.productId, quantity: $event })"
+          (remove)="remove.emit(item.productId)"
+        />
+      }
+    </div>
+
+    <footer class="border-t border-white/10 px-5 py-4">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-stone-400">Estimated items total</span>
+        <span class="font-semibold text-stone-100">{{ itemsTotalLabel() }}</span>
+      </div>
+      <p class="mt-1 text-xs text-stone-500">Delivery and 22% taxes are calculated at checkout.</p>
+
+      <button
+        type="button"
+        class="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+        (click)="proceed.emit()"
+      >
+        Proceed to checkout
+      </button>
+    </footer>
+  }
+</aside>

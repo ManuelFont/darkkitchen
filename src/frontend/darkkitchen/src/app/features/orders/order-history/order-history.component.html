@@ -1,0 +1,79 @@
+<div class="flex h-dvh">
+  <app-sidebar />
+
+  <main class="flex-1 overflow-y-auto bg-canvas px-8 py-10 lg:px-12">
+    <div class="mx-auto max-w-7xl">
+      <header class="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight text-stone-900">
+            {{ isManager ? 'Manage orders' : 'Orders' }}
+          </h1>
+          <p class="mt-1.5 text-stone-600">
+            {{
+              isManager
+                ? 'Review every order and move it through its fulfilment workflow'
+                : 'Review your order history and track active orders'
+            }}
+          </p>
+        </div>
+
+        @if (!isManager) {
+          <a
+            routerLink="/orders/new"
+            class="inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+          >
+            <span class="text-lg leading-none">+</span>
+            New order
+          </a>
+        }
+      </header>
+
+      <app-order-filters class="mb-6 block" (filtersChange)="applyFilters($event)" />
+
+      @if (isEmpty()) {
+        <div
+          class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-surface-raised px-6 py-16 text-center shadow-sm"
+        >
+          <p class="text-lg font-semibold text-stone-100">No orders yet</p>
+          @if (isManager) {
+            <p class="max-w-md text-sm text-stone-400">
+              There are no orders that match these filters. Try widening the date range or clearing
+              the status filter.
+            </p>
+          } @else {
+            <p class="max-w-md text-sm text-stone-400">
+              You haven't placed any orders that match these filters. Browse the catalog to start a
+              new order.
+            </p>
+            <a
+              routerLink="/orders/new"
+              class="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-semibold text-white shadow-sm transition hover:cursor-pointer hover:bg-accent-600"
+            >
+              <span class="text-lg leading-none">+</span>
+              Start a new order
+            </a>
+          }
+        </div>
+      } @else {
+        <app-order-table
+          [orders]="rows()"
+          [loading]="isLoading()"
+          [showCustomer]="isManager"
+          [manageable]="isManager"
+          (manage)="openManage($event)"
+        />
+      }
+    </div>
+  </main>
+</div>
+
+@if (managingOrder(); as order) {
+  <app-order-status-modal
+    [order]="order"
+    [actions]="managingActions()"
+    [isSubmitting]="isSubmitting()"
+    [pendingAction]="pendingAction()"
+    (action)="changeStatus($event)"
+    (cancelled)="closeManage()"
+  />
+}

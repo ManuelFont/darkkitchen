@@ -1,0 +1,51 @@
+<form [formGroup]="form" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+  <div class="relative">
+    <select
+      formControlName="entityName"
+      class="w-full appearance-none rounded-xl border border-white/10 bg-surface-raised px-6 py-2.5 pr-10 text-sm text-stone-200 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+    >
+      <option value="">All entities</option>
+      <option value="Product">Product</option>
+      <option value="Promotion">Promotion</option>
+    </select>
+
+    <svg
+      class="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-stone-400"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <input
+    type="text"
+    formControlName="userEmail"
+    placeholder="Filter by user email…"
+    class="w-full rounded-xl border border-white/10 bg-surface-raised px-4 py-2.5 text-sm text-stone-200 placeholder:text-stone-500 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+  />
+
+  <div class="relative">
+    <select
+      formControlName="action"
+      class="w-full appearance-none rounded-xl border border-white/10 bg-surface-raised px-6 py-2.5 pr-10 text-sm text-stone-200 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+    >
+      <option value="">All actions</option>
+      <option value="Created">Created</option>
+      <option value="Updated">Updated</option>
+      <option value="Deleted">Deleted</option>
+    </select>
+
+    <svg
+      class="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-stone-400"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+</form>

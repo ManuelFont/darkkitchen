@@ -1,0 +1,66 @@
+<div class="overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm">
+  <div class="overflow-x-auto">
+    <table class="w-full table-fixed text-left text-sm">
+      <thead>
+        <tr
+          class="border-b border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+        >
+          <th class="w-28 px-4 py-3">ID</th>
+          <th class="px-4 py-3">Name</th>
+          <th class="w-40 px-4 py-3">Cost</th>
+          <th class="w-28 px-4 py-3">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (loading()) {
+          @for (row of skeletonRows; track $index) {
+            <tr class="border-b border-white/5 last:border-0">
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-16 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-40 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-20 animate-pulse rounded bg-white/10"></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="my-0.5 h-4 w-6 animate-pulse rounded bg-white/10"></div>
+              </td>
+            </tr>
+          }
+        } @else if (deliveryTypes().length === 0) {
+          <tr>
+            <td colspan="4" class="px-4 py-12 text-center text-stone-400">
+              No delivery types found.
+            </td>
+          </tr>
+        } @else {
+          @for (deliveryType of deliveryTypes(); track deliveryType.id) {
+            <tr class="border-b border-white/5 last:border-0 hover:bg-white/5">
+              <td class="px-4 py-3 font-mono text-xs text-stone-500">
+                #{{ deliveryType.id | slice: 0 : 8 }}
+              </td>
+
+              <td class="truncate px-4 py-3 font-medium text-stone-100">{{ deliveryType.name }}</td>
+
+              <td class="px-4 py-3 font-medium text-stone-200">{{ deliveryType.costLabel }}</td>
+
+              <td class="px-4 py-3">
+                <button
+                  type="button"
+                  class="inline-flex size-8 items-center justify-center rounded-lg text-stone-400 transition hover:cursor-pointer hover:bg-info-500/15 hover:text-info-300"
+                  [attr.aria-label]="'Edit ' + deliveryType.name"
+                  (click)="edit.emit(deliveryType)"
+                >
+                  <mat-icon style="font-size: 18px; width: 18px; height: 18px">edit</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

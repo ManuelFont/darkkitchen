@@ -1,0 +1,93 @@
+@if (loading()) {
+  <div class="space-y-6">
+    @for (row of skeletonRows; track $index) {
+      <div class="overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm">
+        <div
+          class="flex items-center justify-between border-b border-white/10 bg-white/5 px-5 py-4"
+        >
+          <div class="h-5 w-32 animate-pulse rounded bg-white/10"></div>
+          <div class="h-5 w-24 animate-pulse rounded bg-white/10"></div>
+        </div>
+        <div class="space-y-3 px-5 py-4">
+          <div class="h-4 w-full animate-pulse rounded bg-white/10"></div>
+          <div class="h-4 w-full animate-pulse rounded bg-white/10"></div>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (months().length === 0) {
+  <div
+    class="rounded-2xl border border-white/10 bg-surface-raised px-4 py-12 text-center text-stone-400 shadow-sm"
+  >
+    No sales found.
+  </div>
+} @else {
+  <div class="space-y-6">
+    @for (month of displayMonths(); track month.period) {
+      <section
+        class="overflow-hidden rounded-2xl border border-white/10 bg-surface-raised shadow-sm"
+      >
+        <button
+          type="button"
+          class="flex w-full items-center justify-between gap-4 border-b border-white/10 bg-white/5 px-5 py-4 text-left transition hover:cursor-pointer hover:bg-white/10"
+          (click)="toggle(month.period)"
+        >
+          <span class="flex items-center gap-2 text-base font-semibold text-white">
+            <mat-icon class="text-stone-400">
+              {{ month.expanded ? 'expand_more' : 'chevron_right' }}
+            </mat-icon>
+            {{ month.label }}
+          </span>
+
+          <span class="font-mono text-sm text-stone-300">{{ month.subtotal.total }}</span>
+        </button>
+
+        @if (month.expanded) {
+          <div class="overflow-x-auto">
+            <table class="w-full table-fixed text-left text-sm">
+              <thead>
+                <tr
+                  class="border-b border-white/10 text-xs font-semibold uppercase tracking-wider text-stone-400"
+                >
+                  <th class="px-5 py-3">Client</th>
+                  <th class="w-32 px-5 py-3 text-right">Items</th>
+                  <th class="w-32 px-5 py-3 text-right">Delivery</th>
+                  <th class="w-32 px-5 py-3 text-right">IVA</th>
+                  <th class="w-32 px-5 py-3 text-right">Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (client of month.clients; track client.clientId) {
+                  <tr class="border-b border-white/5 hover:bg-white/5">
+                    <td class="truncate px-5 py-3 text-stone-200">{{ client.clientName }}</td>
+                    <td class="px-5 py-3 text-right font-mono text-stone-300">
+                      {{ client.amounts.items }}
+                    </td>
+                    <td class="px-5 py-3 text-right font-mono text-stone-300">
+                      {{ client.amounts.delivery }}
+                    </td>
+                    <td class="px-5 py-3 text-right font-mono text-stone-300">
+                      {{ client.amounts.iva }}
+                    </td>
+                    <td class="px-5 py-3 text-right font-mono text-stone-200">
+                      {{ client.amounts.total }}
+                    </td>
+                  </tr>
+                }
+
+                <tr class="bg-white/5 font-semibold text-white">
+                  <td class="px-5 py-3">Subtotal</td>
+                  <td class="px-5 py-3 text-right font-mono">{{ month.subtotal.items }}</td>
+                  <td class="px-5 py-3 text-right font-mono">{{ month.subtotal.delivery }}</td>
+                  <td class="px-5 py-3 text-right font-mono">{{ month.subtotal.iva }}</td>
+                  <td class="px-5 py-3 text-right font-mono">{{ month.subtotal.total }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    }
+  </div>
+}

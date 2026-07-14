@@ -1,0 +1,71 @@
+<table class="w-full table-fixed text-left text-sm">
+  <thead>
+    <tr
+      class="border-b border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+    >
+      <th class="w-28 px-4 py-3">ID</th>
+      <th class="w-48 px-4 py-3">Timestamp</th>
+      <th class="w-32 px-4 py-3">Action</th>
+      <th class="w-40 px-4 py-3">Entity</th>
+      <th class="w-64 px-4 py-3">User</th>
+      <th class="px-4 py-3">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @if (loading()) {
+      @for (row of skeletonRows; track $index) {
+        <tr class="border-b border-white/5 last:border-0">
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-16 animate-pulse rounded bg-white/10"></div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-36 animate-pulse rounded bg-white/10"></div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-20 animate-pulse rounded bg-white/10"></div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-24 animate-pulse rounded bg-white/10"></div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-40 animate-pulse rounded bg-white/10"></div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="my-0.5 h-4 w-48 animate-pulse rounded bg-white/10"></div>
+          </td>
+        </tr>
+      }
+    } @else if (logs().length === 0) {
+      <tr>
+        <td colspan="6" class="px-4 py-12 text-center text-stone-400">No audit logs found.</td>
+      </tr>
+    } @else {
+      @for (log of logs(); track log.id) {
+        <tr class="border-b border-white/5 last:border-0 hover:bg-white/5">
+          <td class="px-4 py-3 font-mono text-xs text-stone-500">#{{ log.id | slice: 0 : 8 }}</td>
+
+          <td class="whitespace-nowrap px-4 py-3 font-mono text-stone-400">
+            {{ log.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}
+          </td>
+
+          <td class="px-4 py-3 font-medium {{ log.actionClass }}">{{ log.action }}</td>
+
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center gap-1.5 text-stone-200">
+              <mat-icon class="text-stone-400" style="font-size: 18px; width: 18px; height: 18px">
+                {{ log.entityIcon }}
+              </mat-icon>
+
+              {{ log.entityName }}
+            </span>
+          </td>
+
+          <td class="truncate px-4 py-3 text-stone-300">{{ log.userEmail }}</td>
+
+          <td class="truncate px-4 py-3 text-stone-300">{{ log.description }}</td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>

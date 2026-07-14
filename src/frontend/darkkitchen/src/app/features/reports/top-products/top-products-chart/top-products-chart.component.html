@@ -1,0 +1,27 @@
+<div class="rounded-2xl border border-white/10 bg-surface-raised p-6 shadow-sm">
+  @if (loading()) {
+    <div class="space-y-4">
+      @for (row of skeletonRows; track $index) {
+        <div class="flex items-center gap-3">
+          <div class="h-4 w-48 animate-pulse rounded bg-white/10"></div>
+          <div class="h-6 flex-1 animate-pulse rounded bg-white/10"></div>
+          <div class="h-4 w-12 animate-pulse rounded bg-white/10"></div>
+        </div>
+      }
+    </div>
+  } @else if (bars().length === 0) {
+    <p class="py-12 text-center text-stone-400">No sales in this period.</p>
+  } @else {
+    <div class="space-y-4">
+      @for (bar of bars(); track bar.name) {
+        <div class="flex items-center gap-3">
+          <span class="w-48 truncate text-sm text-stone-200">{{ bar.name }}</span>
+          <div class="h-6 flex-1 rounded bg-white/5">
+            <div class="h-full rounded bg-brand" [style.width.%]="bar.widthPct"></div>
+          </div>
+          <span class="w-12 text-right font-mono text-sm text-stone-300">{{ bar.quantity }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

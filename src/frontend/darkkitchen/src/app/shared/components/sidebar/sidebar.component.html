@@ -1,0 +1,24 @@
+<div class="flex items-center px-6 py-6 text-2xl font-bold tracking-tight">
+  <span class="text-brand">Dark</span><span class="text-accent">Kitchen</span>
+</div>
+
+<div class="h-px bg-surface-raised"></div>
+
+<nav class="flex-1 overflow-y-auto py-4">
+  @for (section of sections; track section.title) {
+    <div class="mb-2">
+      <p class="px-6 py-2 text-xs font-semibold uppercase tracking-widest text-stone-500">
+        {{ section.title }}
+      </p>
+
+      @for (item of section.items; track item.label) {
+        <app-nav-item
+          [icon]="item.icon"
+          [label]="item.label"
+          [active]="activeLabel() === item.label"
+          (selected)="select(item)"
+        />
+      }
+    </div>
+  }
+</nav>
