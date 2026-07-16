@@ -2,6 +2,10 @@
 
 DarkKitchen is an Angular frontend backed by an ASP.NET Core Web API and SQL Server.
 
+
+https://github.com/user-attachments/assets/4eb97f7b-45ec-4ba1-ae1f-611078dfcb9c
+
+
 ## Setup with Docker
 
 ### Prerequisites
