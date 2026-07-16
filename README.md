@@ -1,6 +1,6 @@
 # 🍽️ DarkKitchen
 
-DarkKitchen is an Angular frontend backed by an ASP.NET Core 8 Web API and SQL Server.
+DarkKitchen is an Angular frontend backed by an ASP.NET Core Web API and SQL Server.
 
 ## Setup with Docker
 
